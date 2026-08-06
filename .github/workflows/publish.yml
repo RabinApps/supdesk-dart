@@ -1,0 +1,56 @@
+name: Publish
+
+# pub.dev's automated publishing is driven by the tag. Configure it once, under
+# the package's Admin tab → Automated publishing → Enable publishing from
+# GitHub Actions, with repository `RabinApps/supdesk-dart` and tag pattern
+# `v{{version}}`. The very first publish has to be done manually with
+# `dart pub publish`, because that page only exists once the package does.
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - run: dart pub get
+
+      # Never publish something CI has not just verified end to end.
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: dart analyze --fatal-infos
+
+      - name: Test with coverage
+        run: dart run coverage:test_with_coverage
+
+      - name: Enforce the coverage threshold
+        run: dart run tool/check_coverage.dart 80
+
+      # Guards against tagging v0.2.0 while pubspec.yaml still says 0.1.0 —
+      # pub.dev would reject the mismatch, but only after the run looks green.
+      - name: Check the tag matches pubspec.yaml and the version constant
+        run: dart run tool/check_version.dart "${GITHUB_REF_NAME#v}"
+
+      - name: Validate the published package
+        run: dart pub publish --dry-run
+
+  publish:
+    name: Publish to pub.dev
+    needs: verify
+    permissions:
+      # Required for OIDC trusted publishing. No PUB_TOKEN secret is involved.
+      id-token: write
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1

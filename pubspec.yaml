@@ -1,0 +1,31 @@
+name: supdesk
+description: >-
+  Server-side Dart client for the SupDesk API. Submissions, feedback, changelog,
+  help center, messages, waitlist, beta programs and signed webhooks.
+version: 0.1.0
+repository: https://github.com/RabinApps/supdesk-dart
+issue_tracker: https://github.com/RabinApps/supdesk-dart/issues
+documentation: https://docs.supdesk.app/en/api/authentication
+
+topics:
+  - supdesk
+  - api
+  - sdk
+  - feedback
+  - changelog
+
+# 3.5 is the floor the runtime dependencies impose (meta ^1.19.0). The dev
+# toolchain needs a newer SDK than that, which is why CI tests on stable and
+# beta rather than on the declared minimum.
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  crypto: ^3.0.7
+  dio: ^5.11.0
+  meta: ^1.19.0
+
+dev_dependencies:
+  coverage: ^1.15.1
+  lints: ^6.1.0
+  test: ^1.31.2

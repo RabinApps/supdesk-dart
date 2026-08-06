@@ -1,0 +1,16 @@
+# Dart / pub
+.dart_tool/
+.packages
+build/
+pubspec.lock
+
+# Coverage output
+coverage/
+
+# Editors
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store

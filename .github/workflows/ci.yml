@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test (Dart ${{ matrix.sdk }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sdk: [stable, beta]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: ${{ matrix.sdk }}
+
+      - run: dart pub get
+
+      - name: Test with coverage
+        run: dart run coverage:test_with_coverage
+
+      # The threshold lives in the script, so this step fails the build if
+      # coverage regresses below 80%.
+      - name: Enforce the coverage threshold
+        run: dart run tool/check_coverage.dart 80
+
+      - name: Upload coverage
+        if: matrix.sdk == 'stable'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 7
+
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - run: dart pub get
+
+      # Formatting is checked on stable only: the formatter's output can differ
+      # between SDK releases, and pinning the check to one of them keeps the
+      # matrix from disagreeing with itself.
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: dart analyze --fatal-infos
+
+  package:
+    name: Package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - run: dart pub get
+
+      - name: Check the version constant matches pubspec
+        run: dart run tool/check_version.dart
+
+      - name: Validate the published package
+        run: dart pub publish --dry-run
+
+      - name: Score the package the way pub.dev will
+        run: |
+          dart pub global activate pana
+          dart pub global run pana --no-warning --exit-code-threshold 20 .
