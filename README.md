@@ -246,6 +246,25 @@ Lower-level helpers: `verifyWebhookSignature(...)` returns a bool,
 `constructEvent(...)` throws on mismatch, and `computeWebhookSignature(...)`
 builds fixtures. Comparison is constant-time.
 
+## Examples
+
+[`example/`](example) is a runnable package of its own:
+
+| | |
+| --- | --- |
+| [`bin/shelf_server.dart`](example/bin/shelf_server.dart) | shelf server: feedback intake, webhook receiver, one error middleware |
+| [`routes/`](example/routes) | the same in dart_frog, with the client behind a `provider` |
+| [`bin/webhook_receiver.dart`](example/bin/webhook_receiver.dart) | signature verification on bare `dart:io`, plus a signed `curl` to test it |
+| [`bin/pagination.dart`](example/bin/pagination.dart) | every way of walking a list endpoint |
+| [`bin/resilience.dart`](example/bin/resilience.dart) | custom `Dio`, interceptors, `CancelToken`, timeouts, the exception hierarchy |
+| [`bin/help_center.dart`](example/bin/help_center.dart) | category → draft → publish → search → delete |
+| [`bin/support_inbox.dart`](example/bin/support_inbox.dart) | threads, replies, closing a conversation |
+| [`bin/waitlist_and_beta.dart`](example/bin/waitlist_and_beta.dart) | inviting from the queue, then enrolling the same people as testers |
+
+```bash
+cd example && dart pub get && dart run bin/pagination.dart
+```
+
 ## Contributing
 
 ```bash

@@ -1,0 +1,8 @@
+include: package:lints/recommended.yaml
+
+# Deliberately lighter than the package's own analysis_options.yaml: examples
+# are read, not published, so dartdoc on every member would only add noise.
+linter:
+  rules:
+    - prefer_single_quotes
+    - unawaited_futures

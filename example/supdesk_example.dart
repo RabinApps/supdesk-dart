@@ -54,7 +54,8 @@ Future<void> main() async {
     print('Monthly submission quota exhausted.');
   } on SupDeskApiException catch (error) {
     print(
-        'SupDesk returned ${error.statusCode} ${error.code}: ${error.message}');
+      'SupDesk returned ${error.statusCode} ${error.code}: ${error.message}',
+    );
   } on SupDeskException catch (error) {
     // Every failure this SDK raises shares one base class.
     print('Request failed: ${error.message}');

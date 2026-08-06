@@ -1,0 +1,24 @@
+name: supdesk_examples
+description: >-
+  Runnable examples for the supdesk package: a shelf server, a dart_frog server,
+  webhook verification, pagination and resilience.
+version: 0.1.0
+publish_to: none
+
+# Higher than the supdesk package's own floor. These are examples, not a
+# published library, so they are free to use the current toolchain.
+environment:
+  sdk: ^3.8.0
+
+dependencies:
+  dart_frog: ^1.2.6
+  # supdesk re-exports Dio, CancelToken and DioException, which is all most
+  # callers need. bin/resilience.dart reaches further — BaseOptions,
+  # InterceptorsWrapper — so it depends on dio directly, as you would.
+  dio: ^5.11.0
+  shelf: ^1.4.2
+  supdesk:
+    path: ../
+
+dev_dependencies:
+  lints: ^6.1.0

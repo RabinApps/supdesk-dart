@@ -67,6 +67,27 @@ jobs:
       - name: Analyze
         run: dart analyze --fatal-infos
 
+  examples:
+    name: Examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      # `example/` is its own package with a path dependency on the parent, so
+      # it needs its own resolution. The root analyzer excludes it precisely
+      # because its imports only resolve after this step.
+      - name: Resolve example dependencies
+        working-directory: example
+        run: dart pub get
+
+      - name: Analyze examples
+        working-directory: example
+        run: dart analyze --fatal-infos
+
   package:
     name: Package
     runs-on: ubuntu-latest
