@@ -21,11 +21,6 @@ Middleware get _catchSupDeskErrors =>
     (handler) => (context) async {
       try {
         return await handler(context);
-      } on ForbiddenException {
-        return Response(
-          statusCode: HttpStatus.internalServerError,
-          body: 'SupDesk writes require a paid plan.',
-        );
       } on LimitReachedException {
         // The monthly quota is gone; backing off will not help.
         return Response(

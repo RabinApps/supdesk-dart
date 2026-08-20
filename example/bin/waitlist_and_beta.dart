@@ -73,8 +73,6 @@ Future<void> main() async {
 
     // Closing the program off to new signups is an update.
     await supdesk.beta.programs.update(program.id, status: 'closed');
-  } on ForbiddenException {
-    print('Writes require a paid plan — the reads above still work.');
   } on LimitReachedException {
     print('Monthly quota exhausted.');
   } finally {

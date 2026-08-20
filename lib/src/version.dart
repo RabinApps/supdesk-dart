@@ -3,4 +3,4 @@
 ///
 /// Kept in step with `pubspec.yaml` by `tool/check_version.dart`, which CI runs
 /// before anything is published.
-const String packageVersion = '0.1.0';
+const String packageVersion = '0.2.0';

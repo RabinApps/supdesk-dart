@@ -1,3 +1,28 @@
+## 0.2.0
+
+### Removed
+
+- **`ForbiddenException` and `SupDeskErrorCode.forbidden`.** SupDesk no longer returns the
+  `forbidden` code — write access is available on every plan now, and the plan gate was the
+  only thing that raised it. A 403 arriving from somewhere else (a proxy, a WAF) surfaces
+  as the base `SupDeskApiException` with its status and body intact. Delete any
+  `on ForbiddenException` clause; `on SupDeskApiException` covers it.
+
+### Added
+
+- `PostStatus.backlog`.
+- `isPrivate` and `moderationStatus` on `Submission` and `Feedback`, plus the
+  `ModerationStatus` union (`published`, `pending`, `spam`). Every post created through the
+  API now runs the same spam assessment as one filed from the portal; a held post triggers
+  no notifications and waits in Spam & moderation in the console.
+- `SupDeskLocale.ar`, `.he` and `.hi` — eleven locales in total.
+
+### Changed
+
+- Writes no longer require a paid plan, and the dartdoc, README and examples say so. What
+  is still metered is creation: `submissions.create` and `feedback.create` count against
+  the monthly submission quota and raise `LimitReachedException` at the cap.
+
 ## 0.1.0
 
 - Initial release.

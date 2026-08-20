@@ -9,9 +9,6 @@ abstract final class SupDeskErrorCode {
   /// 401 — missing, malformed, revoked, or unknown API key.
   static const String unauthorized = 'unauthorized';
 
-  /// 403 — valid key, but the plan does not allow this action.
-  static const String forbidden = 'forbidden';
-
   /// 404 — unknown route, or no such resource in this project.
   static const String notFound = 'not_found';
 
@@ -166,20 +163,6 @@ final class UnauthorizedException extends SupDeskApiException {
   });
 }
 
-/// 403 — valid key, but the plan does not allow this action.
-///
-/// Writes (`POST`, `PATCH`, `DELETE`) require a paid plan.
-final class ForbiddenException extends SupDeskApiException {
-  /// Creates a 403 exception.
-  ForbiddenException({
-    required super.statusCode,
-    required super.code,
-    required super.message,
-    super.headers,
-    super.body,
-  });
-}
-
 /// 404 — unknown route, or no such resource in this project.
 final class NotFoundException extends SupDeskApiException {
   /// Creates a 404 exception.
@@ -263,14 +246,6 @@ SupDeskApiException createApiException({
         headers: headers,
         body: body,
       );
-    case SupDeskErrorCode.forbidden:
-      return ForbiddenException(
-        statusCode: statusCode,
-        code: code,
-        message: message,
-        headers: headers,
-        body: body,
-      );
     case SupDeskErrorCode.notFound:
       return NotFoundException(
         statusCode: statusCode,
@@ -315,6 +290,10 @@ SupDeskApiException createApiException({
     );
   }
 
+  // 403 is deliberately absent: SupDesk no longer returns `forbidden`, so a 403
+  // arriving from somewhere else — a proxy, a WAF, a misrouted request — falls
+  // through to the base class rather than being given a meaning the API does
+  // not define.
   switch (statusCode) {
     case 400:
       return InvalidRequestException(
@@ -326,14 +305,6 @@ SupDeskApiException createApiException({
       );
     case 401:
       return UnauthorizedException(
-        statusCode: statusCode,
-        code: code,
-        message: message,
-        headers: headers,
-        body: body,
-      );
-    case 403:
-      return ForbiddenException(
         statusCode: statusCode,
         code: code,
         message: message,

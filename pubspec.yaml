@@ -2,7 +2,7 @@ name: supdesk
 description: >-
   Server-side Dart client for the SupDesk API. Submissions, feedback, changelog,
   help center, messages, waitlist, beta programs and signed webhooks.
-version: 0.1.0
+version: 0.2.0
 repository: https://github.com/RabinApps/supdesk-dart
 issue_tracker: https://github.com/RabinApps/supdesk-dart/issues
 documentation: https://docs.supdesk.app/en/api/authentication

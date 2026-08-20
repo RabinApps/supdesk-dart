@@ -32,7 +32,7 @@ class BetaPrograms extends APIResource {
         options: options,
       );
 
-  /// `POST /beta/programs` — requires a paid plan.
+  /// `POST /beta/programs`
   Future<BetaProgram> create({
     required String name,
     String? version,
@@ -61,7 +61,7 @@ class BetaPrograms extends APIResource {
         options: options,
       );
 
-  /// `PATCH /beta/programs/:id` — requires a paid plan.
+  /// `PATCH /beta/programs/:id`
   Future<BetaProgram> update(
     String id, {
     String? name,
@@ -91,7 +91,7 @@ class BetaPrograms extends APIResource {
         options: options,
       );
 
-  /// `DELETE /beta/programs/:id` — requires a paid plan.
+  /// `DELETE /beta/programs/:id`
   Future<void> delete(String id, {CallOptions? options}) => requestEmpty(
         'DELETE',
         '/beta/programs/${encodePathSegment(id)}',
@@ -136,7 +136,7 @@ class BetaTesters extends APIResource {
         options: options,
       );
 
-  /// `POST /beta/programs/:programId/testers` — requires a paid plan.
+  /// `POST /beta/programs/:programId/testers`
   Future<BetaTester> create(
     String programId, {
     required String email,
@@ -150,7 +150,7 @@ class BetaTesters extends APIResource {
         options: options,
       );
 
-  /// `DELETE /beta/programs/:programId/testers/:id` — requires a paid plan.
+  /// `DELETE /beta/programs/:programId/testers/:id`
   Future<void> delete(
     String programId,
     String id, {

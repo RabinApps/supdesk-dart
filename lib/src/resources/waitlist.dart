@@ -43,7 +43,7 @@ class Waitlist extends APIResource {
         options: options,
       );
 
-  /// `POST /waitlist/signups` — requires a paid plan.
+  /// `POST /waitlist/signups`
   Future<WaitlistSignup> create({
     required String email,
     String? referralCode,
@@ -58,7 +58,7 @@ class Waitlist extends APIResource {
       );
 
   /// `PATCH /waitlist/signups/:id` — moves a signup between waiting, invited
-  /// and joined. Requires a paid plan.
+  /// and joined.
   Future<WaitlistSignup> update(
     String id, {
     required WaitlistStatus status,
@@ -72,7 +72,7 @@ class Waitlist extends APIResource {
         options: options,
       );
 
-  /// `DELETE /waitlist/signups/:id` — requires a paid plan.
+  /// `DELETE /waitlist/signups/:id`
   Future<void> delete(String id, {CallOptions? options}) => requestEmpty(
         'DELETE',
         '/waitlist/signups/${encodePathSegment(id)}',

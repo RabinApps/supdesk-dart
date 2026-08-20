@@ -17,8 +17,10 @@ export SUPDESK_API_KEY=sd_live_…       # Workspace Settings → API Keys
 export SUPDESK_WEBHOOK_SECRET=whsec_…  # the webhook's signing secret
 ```
 
-Reads work on every plan. **Writes need a paid plan** — the examples that write
-catch `ForbiddenException` and carry on, so they are safe to run on Free.
+Reads and writes both work on every plan, so every example here runs on Free.
+The only cap is creation: `submissions.create` and `feedback.create` are metered
+against your monthly quota — 250 on Free — and raise a `LimitReachedException`
+once it is spent.
 
 ## Servers
 
@@ -69,10 +71,10 @@ whitespace or key order:
 
 ## Why a server at all
 
-A SupDesk API key authenticates as your entire project — on a paid plan it can
-read every end-user email address and delete anything. There is no browser-safe
-publishable key, so the client throws if it is constructed in a Flutter or web
-build.
+A SupDesk API key authenticates as your entire project — it can read every
+end-user email address, see posts hidden from the public portal, and delete
+anything. There is no browser-safe publishable key, so the client throws if it is
+constructed in a Flutter or web build.
 
 That is what these servers are for: your app calls **your** endpoint, and your
 endpoint holds the key. Validate and rate-limit there, since the endpoint is

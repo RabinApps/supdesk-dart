@@ -21,7 +21,6 @@ void main() {
     final cases = <String, Type>{
       SupDeskErrorCode.invalidRequest: InvalidRequestException,
       SupDeskErrorCode.unauthorized: UnauthorizedException,
-      SupDeskErrorCode.forbidden: ForbiddenException,
       SupDeskErrorCode.notFound: NotFoundException,
       SupDeskErrorCode.rateLimited: RateLimitedException,
       SupDeskErrorCode.limitReached: LimitReachedException,
@@ -51,8 +50,17 @@ void main() {
     test('maps documented statuses', () {
       expect(build(statusCode: 400), isA<InvalidRequestException>());
       expect(build(statusCode: 401), isA<UnauthorizedException>());
-      expect(build(statusCode: 403), isA<ForbiddenException>());
       expect(build(statusCode: 404), isA<NotFoundException>());
+    });
+
+    test('leaves a 403 as the base class', () {
+      // SupDesk removed `forbidden` when write access reached every plan, so a
+      // 403 now only arrives from something in front of the API — a proxy, a
+      // WAF — and is given no meaning the API does not define.
+      final error = build(statusCode: 403);
+
+      expect(error.runtimeType, SupDeskApiException);
+      expect(error.statusCode, 403);
     });
 
     test('treats an undocumented 429 as throttling, not quota', () {

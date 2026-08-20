@@ -71,8 +71,16 @@ void main() {
 
     test('compare by their string value', () {
       expect(const PostStatus('open'), PostStatus.open);
+      expect(PostStatus.values, hasLength(5));
+      expect(PostStatus.backlog.value, 'backlog');
       expect(SubmissionType.bug.value, 'bug');
-      expect(SupDeskLocale.values, hasLength(8));
+      expect(ModerationStatus.values, hasLength(3));
+      expect(ModerationStatus.spam.value, 'spam');
+      expect(SupDeskLocale.values, hasLength(11));
+      expect(
+        SupDeskLocale.values.map((locale) => locale.value),
+        containsAll(['ar', 'he', 'hi']),
+      );
       expect(ChangelogStatus.values, hasLength(3));
       expect(ThreadStatus.values, hasLength(2));
       expect(MessageSender.endUser.value, 'end_user');
@@ -89,6 +97,8 @@ void main() {
       'title': 'Export button does nothing',
       'body': 'No effect.',
       'status': 'in_progress',
+      'is_private': false,
+      'moderation_status': 'published',
       'created_at': '2026-01-02T03:04:05.000Z',
     };
 
@@ -98,6 +108,8 @@ void main() {
       expect(submission.id, 'sub_1');
       expect(submission.type, SubmissionType.bug);
       expect(submission.status, PostStatus.inProgress);
+      expect(submission.isPrivate, isFalse);
+      expect(submission.moderationStatus, ModerationStatus.published);
       expect(submission.createdAt, DateTime.utc(2026, 1, 2, 3, 4, 5));
       expect(submission.toJson(), json);
       expect(Submission.fromJson(submission.toJson()), submission);
@@ -110,7 +122,33 @@ void main() {
 
       expect(submission.id, '');
       expect(submission.createdAt, isNull);
+      // The API always sends both, so these defaults only ever surface for a
+      // payload that dropped them.
+      expect(submission.isPrivate, isFalse);
+      expect(submission.moderationStatus, const ModerationStatus(''));
       expect(submission, isNot(Submission.fromJson(json)));
+    });
+
+    test('carries the backlog status', () {
+      final submission = Submission.fromJson({...json, 'status': 'backlog'});
+
+      expect(submission.status, PostStatus.backlog);
+      expect(submission.toJson()['status'], 'backlog');
+    });
+
+    test('a held private post differs from a published one', () {
+      final held = Submission.fromJson({
+        ...json,
+        'is_private': true,
+        'moderation_status': 'pending',
+      });
+
+      expect(held.isPrivate, isTrue);
+      expect(held.moderationStatus, ModerationStatus.pending);
+      expect(held, isNot(Submission.fromJson(json)));
+      expect(held.hashCode, isNot(Submission.fromJson(json).hashCode));
+      expect(held.toString(), contains('private: true'));
+      expect(held.toJson()['moderation_status'], 'pending');
     });
   });
 
@@ -122,6 +160,8 @@ void main() {
         'title': 'Love it',
         'body': '',
         'status': 'open',
+        'is_private': true,
+        'moderation_status': 'spam',
         'created_at': '2026-01-02T03:04:05.000Z',
       };
 
@@ -129,10 +169,19 @@ void main() {
 
       expect(feedback.type, 'feedback');
       expect(feedback.status, PostStatus.open);
+      expect(feedback.isPrivate, isTrue);
+      expect(feedback.moderationStatus, ModerationStatus.spam);
       expect(feedback.toJson(), json);
       expect(Feedback.fromJson(json), feedback);
       expect(feedback.hashCode, Feedback.fromJson(json).hashCode);
       expect(feedback.toString(), contains('fb_1'));
+    });
+
+    test('defaults the new fields when the payload omits them', () {
+      final feedback = Feedback.fromJson(const {'id': 'fb_2'});
+
+      expect(feedback.isPrivate, isFalse);
+      expect(feedback.moderationStatus, const ModerationStatus(''));
     });
   });
 

@@ -49,6 +49,15 @@ void main() {
     );
 
     endpoint(
+      'list by backlog status',
+      call: (client) => client.submissions.list(status: PostStatus.backlog),
+      method: 'GET',
+      path: '/submissions',
+      query: 'status=backlog',
+      response: emptyPage,
+    );
+
+    endpoint(
       'list without filters',
       call: (client) => client.submissions.list(),
       method: 'GET',
@@ -71,7 +80,7 @@ void main() {
         email: 'user@example.com',
         body: 'Please.',
         name: 'Ada',
-        locale: SupDeskLocale.de,
+        locale: SupDeskLocale.ar,
       ),
       method: 'POST',
       path: '/submissions',
@@ -81,7 +90,7 @@ void main() {
         'email': 'user@example.com',
         'body': 'Please.',
         'name': 'Ada',
-        'locale': 'de',
+        'locale': 'ar',
       },
     );
 

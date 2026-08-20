@@ -144,8 +144,8 @@ void main() {
     test('maps the error envelope to a typed exception', () {
       final adapter = MockAdapter([
         MockResponse(
-          status: 403,
-          json: errorBody('forbidden', 'writes require a paid plan'),
+          status: 404,
+          json: errorBody('not_found', 'no submission with that id'),
           headers: {'x-request-id': 'req_1'},
         ),
       ]);
@@ -153,13 +153,13 @@ void main() {
       expect(
         httpClientWith(adapter).request(method: 'POST', path: '/x'),
         throwsA(
-          isA<ForbiddenException>()
-              .having((error) => error.statusCode, 'statusCode', 403)
-              .having((error) => error.code, 'code', 'forbidden')
+          isA<NotFoundException>()
+              .having((error) => error.statusCode, 'statusCode', 404)
+              .having((error) => error.code, 'code', 'not_found')
               .having(
                 (error) => error.message,
                 'message',
-                'writes require a paid plan',
+                'no submission with that id',
               )
               .having((error) => error.requestId, 'requestId', 'req_1'),
         ),

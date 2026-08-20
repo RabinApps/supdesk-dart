@@ -35,7 +35,7 @@ class FeedbackResource extends APIResource {
   /// `POST /feedback`
   ///
   /// Metered against the same monthly submission quota as
-  /// `submissions.create`, and requires a paid plan.
+  /// `submissions.create`.
   Future<Feedback> create({
     required String title,
     required String email,

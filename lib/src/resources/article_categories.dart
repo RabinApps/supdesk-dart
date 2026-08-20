@@ -31,7 +31,7 @@ class ArticleCategories extends APIResource {
         options: options,
       );
 
-  /// `POST /article-categories` — requires a paid plan.
+  /// `POST /article-categories`
   Future<ArticleCategory> create({
     required String name,
     String? description,
@@ -50,7 +50,7 @@ class ArticleCategories extends APIResource {
         options: options,
       );
 
-  /// `PATCH /article-categories/:id` — requires a paid plan.
+  /// `PATCH /article-categories/:id`
   Future<ArticleCategory> update(
     String id, {
     String? name,
@@ -70,7 +70,7 @@ class ArticleCategories extends APIResource {
         options: options,
       );
 
-  /// `DELETE /article-categories/:id` — requires a paid plan.
+  /// `DELETE /article-categories/:id`
   ///
   /// Articles in the category are kept; they become uncategorized.
   Future<void> delete(String id, {CallOptions? options}) => requestEmpty(

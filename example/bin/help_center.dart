@@ -2,7 +2,7 @@
 //
 //   SUPDESK_API_KEY=sd_live_… dart run bin/help_center.dart
 //
-// Every write here needs a paid plan.
+// Writes work on every plan.
 import 'dart:io';
 
 import 'package:supdesk/supdesk.dart';
@@ -58,8 +58,6 @@ Future<void> main() async {
     await supdesk.articles.delete(published.id);
     await supdesk.articleCategories.delete(category.id);
     print('cleaned up');
-  } on ForbiddenException {
-    print('Writes require a paid plan — the reads above still work.');
   } finally {
     supdesk.close();
   }

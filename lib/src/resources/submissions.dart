@@ -40,7 +40,7 @@ class Submissions extends APIResource {
 
   /// `POST /submissions`
   ///
-  /// Counts against the monthly submission quota and requires a paid plan.
+  /// Counts against the monthly submission quota.
   Future<Submission> create({
     required SubmissionType type,
     required String title,

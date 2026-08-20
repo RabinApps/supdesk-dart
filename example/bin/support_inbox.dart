@@ -57,8 +57,6 @@ Future<void> main() async {
       subject: 'Invoice question (resolved)',
     );
     print('closed: ${closed.status.value}');
-  } on ForbiddenException {
-    print('Writes require a paid plan — the reads above still work.');
   } finally {
     supdesk.close();
   }

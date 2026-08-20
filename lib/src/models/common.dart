@@ -5,6 +5,9 @@
 /// crashing a client that predates it, while the documented values still
 /// autocomplete.
 extension type const PostStatus(String value) {
+  /// Captured, but not yet triaged onto the roadmap.
+  static const PostStatus backlog = PostStatus('backlog');
+
   /// Newly filed, not yet triaged.
   static const PostStatus open = PostStatus('open');
 
@@ -18,7 +21,13 @@ extension type const PostStatus(String value) {
   static const PostStatus done = PostStatus('done');
 
   /// Every documented value.
-  static const List<PostStatus> values = [open, planned, inProgress, done];
+  static const List<PostStatus> values = [
+    backlog,
+    open,
+    planned,
+    inProgress,
+    done,
+  ];
 }
 
 /// What kind of thing a submission describes.
@@ -33,6 +42,25 @@ extension type const SubmissionType(String value) {
   static const List<SubmissionType> values = [bug, feature];
 }
 
+/// Where a post sits in spam moderation.
+///
+/// Every post created through the API runs the same spam assessment as one filed
+/// from the portal. A held post triggers no notifications and waits in Spam &
+/// moderation in the console for a team member to review.
+extension type const ModerationStatus(String value) {
+  /// Approved, and visible wherever the post belongs.
+  static const ModerationStatus published = ModerationStatus('published');
+
+  /// Held for review.
+  static const ModerationStatus pending = ModerationStatus('pending');
+
+  /// Held as spam.
+  static const ModerationStatus spam = ModerationStatus('spam');
+
+  /// Every documented value.
+  static const List<ModerationStatus> values = [published, pending, spam];
+}
+
 /// Languages SupDesk accepts for end-user notification emails and content.
 ///
 /// Named `SupDeskLocale` rather than `Locale` so it never collides with
@@ -40,6 +68,9 @@ extension type const SubmissionType(String value) {
 extension type const SupDeskLocale(String value) {
   /// English.
   static const SupDeskLocale en = SupDeskLocale('en');
+
+  /// Arabic.
+  static const SupDeskLocale ar = SupDeskLocale('ar');
 
   /// German.
   static const SupDeskLocale de = SupDeskLocale('de');
@@ -49,6 +80,12 @@ extension type const SupDeskLocale(String value) {
 
   /// French.
   static const SupDeskLocale fr = SupDeskLocale('fr');
+
+  /// Hebrew.
+  static const SupDeskLocale he = SupDeskLocale('he');
+
+  /// Hindi.
+  static const SupDeskLocale hi = SupDeskLocale('hi');
 
   /// Italian.
   static const SupDeskLocale it = SupDeskLocale('it');
@@ -63,7 +100,19 @@ extension type const SupDeskLocale(String value) {
   static const SupDeskLocale zh = SupDeskLocale('zh');
 
   /// Every documented value.
-  static const List<SupDeskLocale> values = [en, de, es, fr, it, ja, ru, zh];
+  static const List<SupDeskLocale> values = [
+    en,
+    ar,
+    de,
+    es,
+    fr,
+    he,
+    hi,
+    it,
+    ja,
+    ru,
+    zh,
+  ];
 }
 
 /// Publication state of a changelog entry.

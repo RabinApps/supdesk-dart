@@ -38,7 +38,7 @@ class Changelog extends APIResource {
         options: options,
       );
 
-  /// `POST /changelog` — requires a paid plan.
+  /// `POST /changelog`
   Future<ChangelogEntry> create({
     required String title,
     String? body,
@@ -63,7 +63,7 @@ class Changelog extends APIResource {
         options: options,
       );
 
-  /// `PATCH /changelog/:id` — requires a paid plan.
+  /// `PATCH /changelog/:id`
   Future<ChangelogEntry> update(
     String id, {
     String? title,
@@ -89,7 +89,7 @@ class Changelog extends APIResource {
         options: options,
       );
 
-  /// `DELETE /changelog/:id` — requires a paid plan.
+  /// `DELETE /changelog/:id`
   Future<void> delete(String id, {CallOptions? options}) => requestEmpty(
         'DELETE',
         '/changelog/${encodePathSegment(id)}',

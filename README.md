@@ -18,7 +18,7 @@ or a proxy-aware adapter all work the way you already expect.
 
 ```yaml
 dependencies:
-  supdesk: ^0.1.0
+  supdesk: ^0.2.0
 ```
 
 ## Quick start
@@ -44,17 +44,18 @@ await supdesk.submissions.create(
 ```
 
 API keys come from **Workspace Settings → API Keys** in the SupDesk console and
-are scoped to a single project. Reads work on every plan; **writes (`POST`,
-`PATCH`, `DELETE`) require a paid plan** and otherwise raise a
-`ForbiddenException`.
+are scoped to a single project. Reads and writes both work on every plan,
+Free included. What is metered is creation: `submissions.create` and
+`feedback.create` count against your monthly submission quota — 250 on Free —
+and raise a `LimitReachedException` at the cap.
 
 ## Security
 
-**The API key is a server-side secret.** It is project-scoped, and on a paid
-plan it can create, edit and delete submissions, feedback, changelog entries,
-help center articles, message threads, waitlist signups and beta programs — and
-read every end-user email address in your project. SupDesk has no browser-safe
-publishable key.
+**The API key is a server-side secret.** It is project-scoped, and it can
+create, edit and delete submissions, feedback, changelog entries, help center
+articles, message threads, waitlist signups and beta programs — on every plan —
+and read every end-user email address in your project, private posts included.
+SupDesk has no browser-safe publishable key.
 
 So the client refuses to start anywhere an end user could read it:
 
@@ -160,6 +161,28 @@ submission.status == PostStatus.open;
 const PostStatus('under_review'); // whatever the server sends
 ```
 
+## Spam moderation
+
+Every submission and feedback post created through the API runs the same spam
+assessment as one filed from the portal, and each post reports the verdict:
+
+```dart
+final submission = await supdesk.submissions.create(
+  type: SubmissionType.bug,
+  title: 'Export button does nothing',
+  email: 'user@example.com',
+);
+
+if (submission.moderationStatus != ModerationStatus.published) {
+  // Held as `pending` or `spam`: no notifications go out, and it waits in
+  // Spam & moderation in the console for a team member.
+}
+```
+
+Posts also carry `isPrivate`, which reports whether they are hidden from your
+public portal. An API key reads private posts like any other — the portal is the
+only surface that filters them out.
+
 ## Errors
 
 Every failure is a `SupDeskException`, so one `catch` covers the lot while
@@ -168,11 +191,15 @@ Every failure is a `SupDeskException`, so one `catch` covers the lot while
 
 ```dart
 try {
-  await supdesk.articles.create(title: 'How to export');
-} on ForbiddenException {
-  // Valid key, but writes need a paid plan.
+  await supdesk.submissions.create(
+    type: SubmissionType.bug,
+    title: 'Export button does nothing',
+    email: 'user@example.com',
+  );
 } on LimitReachedException {
-  // Monthly submission quota exhausted.
+  // Monthly submission quota exhausted — creates are metered.
+} on RateLimitedException {
+  // 120 requests per 60 seconds, and the retries have already been spent.
 } on SupDeskException catch (error) {
   print(error.message);
 }
@@ -182,7 +209,6 @@ try {
 | --------------------------- | ------ | ----------------- |
 | `InvalidRequestException`   | 400    | `invalid_request` |
 | `UnauthorizedException`     | 401    | `unauthorized`    |
-| `ForbiddenException`        | 403    | `forbidden`       |
 | `NotFoundException`         | 404    | `not_found`       |
 | `RateLimitedException`      | 429    | `rate_limited`    |
 | `LimitReachedException`     | 429    | `limit_reached`   |

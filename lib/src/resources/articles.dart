@@ -55,7 +55,7 @@ class Articles extends APIResource {
         options: options,
       );
 
-  /// `POST /articles` — creates a draft. Requires a paid plan.
+  /// `POST /articles` — creates a draft.
   Future<Article> create({
     required String title,
     String? body,
@@ -79,8 +79,6 @@ class Articles extends APIResource {
       );
 
   /// `PATCH /articles/:id` — also how an article is published.
-  ///
-  /// Requires a paid plan.
   Future<Article> update(
     String id, {
     String? title,
@@ -106,7 +104,7 @@ class Articles extends APIResource {
         options: options,
       );
 
-  /// `DELETE /articles/:id` — requires a paid plan.
+  /// `DELETE /articles/:id`
   Future<void> delete(String id, {CallOptions? options}) => requestEmpty(
         'DELETE',
         '/articles/${encodePathSegment(id)}',

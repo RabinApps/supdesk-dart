@@ -36,6 +36,8 @@ Future<Response> onRequest(RequestContext context) async {
             'type': submission.type.value,
             'title': submission.title,
             'status': submission.status.value,
+            'is_private': submission.isPrivate,
+            'moderation_status': submission.moderationStatus.value,
             'created_at': submission.createdAt?.toIso8601String(),
           },
       ],

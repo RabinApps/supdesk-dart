@@ -38,7 +38,7 @@ Future<void> main() async {
       print('${hit.rank.toStringAsFixed(2)}  ${hit.title}');
     }
 
-    // Writes need a paid plan and count against the monthly quota.
+    // Writes work on every plan; creates count against the monthly quota.
     final created = await supdesk.submissions.create(
       type: SubmissionType.bug,
       title: 'Export button does nothing',
@@ -48,8 +48,6 @@ Future<void> main() async {
     );
 
     print('filed ${created.id}');
-  } on ForbiddenException {
-    print('Writes require a paid plan.');
   } on LimitReachedException {
     print('Monthly submission quota exhausted.');
   } on SupDeskApiException catch (error) {

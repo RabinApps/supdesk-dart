@@ -36,8 +36,6 @@ class Messages extends APIResource {
       );
 
   /// `POST /messages` — opens a thread with its initial message.
-  ///
-  /// Requires a paid plan.
   Future<ThreadWithMessages> create({
     required String email,
     String? name,
@@ -60,7 +58,7 @@ class Messages extends APIResource {
         options: options,
       );
 
-  /// `PATCH /messages/:threadId` — requires a paid plan.
+  /// `PATCH /messages/:threadId`
   Future<ThreadWithMessages> update(
     String threadId, {
     ThreadStatus? status,
@@ -75,7 +73,7 @@ class Messages extends APIResource {
         options: options,
       );
 
-  /// `DELETE /messages/:threadId` — requires a paid plan.
+  /// `DELETE /messages/:threadId`
   Future<void> delete(String threadId, {CallOptions? options}) => requestEmpty(
         'DELETE',
         '/messages/${encodePathSegment(threadId)}',
@@ -83,8 +81,6 @@ class Messages extends APIResource {
       );
 
   /// `POST /messages/:threadId/messages` — appends a reply.
-  ///
-  /// Requires a paid plan.
   Future<Message> addMessage(
     String threadId, {
     required String body,

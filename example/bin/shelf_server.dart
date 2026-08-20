@@ -133,10 +133,6 @@ Future<Response> _searchArticles(Request request) async {
 Handler _catchSupDeskErrors(Handler inner) => (request) async {
   try {
     return await inner(request);
-  } on ForbiddenException {
-    return Response.internalServerError(
-      body: 'SupDesk writes require a paid plan.',
-    );
   } on LimitReachedException {
     // The monthly quota is gone; backing off will not help.
     return Response(503, body: 'SupDesk quota exhausted.');
